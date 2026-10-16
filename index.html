@@ -6,10 +6,8 @@
   <title>Stadtstücke. Prag</title>
   <meta name="description" content="Ein Stadtführer für Prag: Architektur, Kunst, Parks, Essen und Ausblicke – mit Karte, Fußweg und ÖPNV.">
   <link rel="icon" href="icons/landmark.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <link href="fonts/fonts.css" rel="stylesheet">
+  <link href="vendor/maplibre-gl.css" rel="stylesheet">
   <link href="css/styles.css" rel="stylesheet">
 </head>
 <body>
@@ -58,6 +56,10 @@
           <p class="footer__brand">Stadtstücke.</p>
           <p class="footer__place" data-i18n="footerPlace"></p>
         </div>
+        <nav class="footer__legal" aria-label="Rechtliches">
+          <a href="#/impressum" data-i18n="imprint">Impressum</a>
+          <a href="#/datenschutz" data-i18n="privacy">Datenschutz</a>
+        </nav>
         <a class="footer__up" href="#top" data-top>
           <span data-i18n="backToTop">Zurück nach oben</span>
           <img src="icons/arrow-up-right-light.svg" alt="" width="19" height="19">
@@ -66,10 +68,11 @@
     </div>
   </footer>
 
-  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="vendor/maplibre-gl.js"></script>
   <script src="js/data.js"></script>
   <script src="js/stops.js"></script>
   <script src="js/i18n.js"></script>
+  <script src="js/legal.js"></script>
   <script src="js/map-style.js"></script>
   <script src="js/geo.js"></script>
   <script src="js/app.js"></script>

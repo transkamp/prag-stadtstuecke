@@ -52,6 +52,7 @@ const UI = {
     dishWhere: 'Wo probieren?', dishWhereText: 'Klassische Wirtshäuser und Kaffeehäuser sind ein guter Anfang. Ein paar Adressen aus diesem Stadtführer:',
     dishKicker: 'Auf der Speisekarte', youAreHere: 'Du bist hier', meters: 'm', km: 'km', min: 'Min.', h: 'Std.',
     notFound: 'Diesen Ort gibt es hier nicht.',
+    imprint: 'Impressum', privacy: 'Datenschutz', backHome: 'Zur Startseite',
     coop: { win: 'Strg + Scrollen zum Zoomen', mac: '⌘ + Scrollen zum Zoomen', mobile: 'Mit zwei Fingern bewegen' },
   },
   en: {
@@ -104,6 +105,7 @@ const UI = {
     dishWhere: 'Where to try it?', dishWhereText: 'Traditional pubs and coffee houses are a good start. A few addresses from this guide:',
     dishKicker: 'On the menu', youAreHere: 'You are here', meters: 'm', km: 'km', min: 'min', h: 'h',
     notFound: 'This place does not exist here.',
+    imprint: 'Legal notice', privacy: 'Privacy', backHome: 'Back to home',
     coop: { win: 'Use Ctrl + scroll to zoom', mac: 'Use ⌘ + scroll to zoom', mobile: 'Use two fingers to move the map' },
   },
 };

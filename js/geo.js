@@ -16,7 +16,6 @@ const Geo = {
       navigator.geolocation.getCurrentPosition(
         pos => {
           this.position = { lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy };
-          try { localStorage.setItem('geoAllowed', '1'); } catch (e) { /* ignore */ }
           this.emit();
           this.watch();
           resolve(this.position);
@@ -72,12 +71,11 @@ const Geo = {
   },
 
   stopsCache: new Map(),
-  /* Haltestellen kommen vorberechnet aus js/stops.js (OSM-Export). Overpass nur als Rückfall. */
+  /* Haltestellen kommen vorberechnet aus js/stops.js (OSM-Export) – keine Abfrage an Dritte */
   async nearbyStops(place, radius = 450) {
     if (this.stopsCache.has(place.id)) return this.stopsCache.get(place.id);
     const near = s => this.distance(place, { lat: s[2], lon: s[3] }) <= (s[1] === 'metro' || s[1] === 'funicular' ? radius + 250 : radius);
-    let raw = (window.STOPS || []).filter(near);
-    if (!raw.length) raw = (await this.overpassStops(place, radius)).filter(near);
+    const raw = (window.STOPS || []).filter(near);
     const byName = new Map();
     for (const [name, type, lat, lon] of raw) {
       const d = this.distance(place, { lat, lon });
@@ -94,29 +92,7 @@ const Geo = {
     this.stopsCache.set(place.id, list);
     return list;
   },
-
-  async overpassStops(place, radius) {
-    const r2 = radius + 250, at = `${place.lat},${place.lon}`;
-    const q = `[out:json][timeout:10];(node(around:${radius},${at})[railway=tram_stop];node(around:${radius},${at})[highway=bus_stop];node(around:${r2},${at})[railway=station][station~"^(subway|funicular)$"];);out body;`;
-    const res = await fetchWithTimeout('https://overpass-api.de/api/interpreter', 12000, {
-      method: 'POST',
-      body: 'data=' + encodeURIComponent(q),
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
-    if (!res.ok) throw new Error('overpass ' + res.status);
-    const data = await res.json();
-    return data.elements.map(stopFromOsm).filter(Boolean);
-  },
 };
-
-/* OSM-Knoten → [Name, Typ, lat, lon] */
-function stopFromOsm(el) {
-  const t = el.tags || {};
-  if (!t.name || el.lat == null) return null;
-  const type = t.station === 'subway' ? 'metro' : t.station === 'funicular' ? 'funicular'
-    : t.railway === 'tram_stop' ? 'tram' : t.highway === 'bus_stop' ? 'bus' : null;
-  return type ? [t.name, type, el.lat, el.lon] : null;
-}
 
 function fetchWithTimeout(url, ms, opts = {}) {
   const ctrl = new AbortController();

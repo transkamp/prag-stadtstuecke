@@ -494,6 +494,20 @@ function mountDish() {
   bindLocateButtons();
 }
 
+/* ---------------------------------------------------------------- Impressum & Datenschutz */
+
+function renderLegal(page) {
+  return `
+  <article class="detail legal wrap">
+    <a class="back" href="#/"><span aria-hidden="true">←</span> ${esc(t('backHome'))}</a>
+    <header class="detail__head">
+      <div class="chapter"><span class="chapter__num">${esc(l(page.kicker))}</span><span class="chapter__line"></span></div>
+      <h1 class="detail__title">${esc(l(page.title))}</h1>
+    </header>
+    <div class="legal__body">${l(page.html)}</div>
+  </article>`;
+}
+
 /* ---------------------------------------------------------------- Karten-Helfer */
 
 function boundsOf(points) {
@@ -680,6 +694,10 @@ function route({ keepScroll = false, animate = true } = {}) {
     state.route = d.id;
     app.innerHTML = renderDish(d);
     mountDish();
+  } else if (LEGAL[kind]) {
+    view = 'legal'; title = `${l(LEGAL[kind].title)} · Stadtstücke. ${t('heroTitle')}`;
+    state.route = kind;
+    app.innerHTML = renderLegal(LEGAL[kind]);
   } else {
     state.route = 'home';
     app.innerHTML = renderHome();

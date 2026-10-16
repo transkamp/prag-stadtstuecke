@@ -249,6 +249,8 @@ ol, ul { padding: 0; list-style: none; }
 .footer__bar { border-top: 1px solid var(--muted); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .footer__brand { font-family: var(--serif); font-size: 23px; }
 .footer__place { font-size: 10px; color: var(--sage); margin-top: 6px; }
+.footer__legal { display: flex; gap: 20px; font-size: 12px; margin-left: auto; margin-right: 32px; }
+.footer__legal a { color: var(--sage); transition: color 160ms ease; }
 .footer__up { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; }
 .footer__up img { transition: transform 200ms var(--ease-out); }
 
@@ -354,6 +356,17 @@ ol, ul { padding: 0; list-style: none; }
 .pager__dir { font-size: 11px; color: var(--accent); text-transform: uppercase; }
 .pager__name { font-family: var(--serif); font-size: 25px; }
 
+/* ---------------------------------------------------------------- Rechtliches */
+.detail__title { overflow-wrap: break-word; hyphens: auto; }
+.legal .detail__title { font-size: 56px; }
+.legal__body { max-width: 720px; display: flex; flex-direction: column; gap: 14px; }
+.legal__body h2 { font-family: var(--serif); font-weight: 400; font-size: 23px; line-height: 1.25; margin-top: 18px; }
+.legal__body h2:first-child { margin-top: 0; }
+.legal__body p { font-size: 15px; line-height: 1.7; }
+.legal__body a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; word-break: break-word; }
+.legal__hint { font-size: 13px !important; color: var(--muted); background: var(--sand); padding: 12px 16px; }
+.legal__date { font-size: 12px !important; color: var(--muted); margin-top: 18px; }
+
 /* ---------------------------------------------------------------- Bewegung */
 /* Ansichtswechsel – gelegentlich, daher eine kurze, dezente Einblendung */
 .view-enter { animation: view-in 280ms var(--ease-out); }
@@ -373,6 +386,7 @@ ol, ul { padding: 0; list-style: none; }
   .note:hover .note__title, .dish:hover .dish__name, .pager__link:hover .pager__name { color: var(--accent-ink); }
   .viewpoint:hover img, .footer__up:hover img { transform: translate(2px, -2px); }
   .back:hover { color: var(--ink); }
+  .footer__legal a:hover { color: var(--paper); }
   .back:hover span { transform: translateX(-3px); }
   .chip:not(.is-active):hover { border-color: var(--muted); }
   .btn--ghost:hover { border-color: var(--muted); }
@@ -451,6 +465,8 @@ ol, ul { padding: 0; list-style: none; }
   .viewpoint { padding: 20px; align-items: flex-start; }
   .footer__claim { font-size: 34px; }
   .footer__bar { flex-direction: column; align-items: flex-start; }
+  .footer__legal { margin: 0; }
+  .legal .detail__title { font-size: 36px; }
   .detail { padding-top: 24px; }
   .detail__title { font-size: 48px; }
   .detail__img img { height: 260px; }

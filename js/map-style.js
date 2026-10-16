@@ -1,0 +1,106 @@
+/* Eigener Basemap-Stil in den Farben des Figma-Entwurfs.
+   Daten: OpenStreetMap über OpenFreeMap-Vektorkacheln (OpenMapTiles-Schema). */
+
+const MAP_COLORS = {
+  land: '#eae6da',
+  residential: '#e6e1d3',
+  green: '#d3d9c4',
+  wood: '#c9d1b7',
+  water: '#bcd0cf',
+  building: '#e1dbcc',
+  buildingLine: '#d6cfbf',
+  road: '#f7f3ea',
+  roadMajor: '#fffcf6',
+  casing: '#dcd5c5',
+  path: '#d2cbbb',
+  rail: '#c7c0b0',
+  label: '#75766c',
+  labelStrong: '#4f5249',
+  water_label: '#303b34',
+};
+
+const LINE = ['match', ['geometry-type'], ['LineString', 'MultiLineString'], true, false];
+const POLY = ['match', ['geometry-type'], ['MultiPolygon', 'Polygon'], true, false];
+const cls = (...c) => ['match', ['get', 'class'], c, true, false];
+const notTunnel = ['!=', ['get', 'brunnel'], 'tunnel'];
+const localName = ['coalesce', ['get', 'name'], ['get', 'name:latin']];
+
+const MAP_STYLE = {
+  version: 8,
+  name: 'Stadtstücke Prag',
+  glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+  sources: {
+    openmaptiles: {
+      type: 'vector',
+      url: 'https://tiles.openfreemap.org/planet',
+      attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende',
+    },
+  },
+  layers: [
+    { id: 'background', type: 'background', paint: { 'background-color': MAP_COLORS.land } },
+    { id: 'residential', type: 'fill', source: 'openmaptiles', 'source-layer': 'landuse',
+      filter: ['all', POLY, cls('residential', 'suburb', 'neighbourhood')],
+      paint: { 'fill-color': MAP_COLORS.residential } },
+    /* Schutzgebiete (z. B. die Prager Denkmalzone) nicht als Grünfläche einfärben */
+    { id: 'park', type: 'fill', source: 'openmaptiles', 'source-layer': 'park',
+      filter: ['all', POLY, ['!', cls('protected_area', 'national_park', 'nature_reserve')], ['!', ['in', 'histor', ['to-string', ['get', 'class']]]]],
+      paint: { 'fill-color': MAP_COLORS.green } },
+    { id: 'landcover-green', type: 'fill', source: 'openmaptiles', 'source-layer': 'landcover',
+      filter: ['all', POLY, cls('grass', 'wood', 'farmland')],
+      paint: { 'fill-color': ['match', ['get', 'class'], 'wood', MAP_COLORS.wood, MAP_COLORS.green], 'fill-opacity': 0.9 } },
+    { id: 'landuse-green', type: 'fill', source: 'openmaptiles', 'source-layer': 'landuse',
+      filter: ['all', POLY, cls('cemetery', 'pitch', 'stadium', 'grass', 'playground')],
+      paint: { 'fill-color': MAP_COLORS.green, 'fill-opacity': 0.8 } },
+    { id: 'water', type: 'fill', source: 'openmaptiles', 'source-layer': 'water', filter: ['all', POLY, notTunnel],
+      paint: { 'fill-color': MAP_COLORS.water } },
+    { id: 'waterway', type: 'line', source: 'openmaptiles', 'source-layer': 'waterway', filter: LINE,
+      paint: { 'line-color': MAP_COLORS.water, 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 1, 17, 4] } },
+    { id: 'building', type: 'fill', source: 'openmaptiles', 'source-layer': 'building', minzoom: 14,
+      paint: { 'fill-color': MAP_COLORS.building, 'fill-outline-color': MAP_COLORS.buildingLine,
+        'fill-opacity': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, 1] } },
+
+    { id: 'path', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', minzoom: 14,
+      filter: ['all', LINE, cls('path'), notTunnel],
+      paint: { 'line-color': MAP_COLORS.path, 'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.6, 18, 1.6], 'line-dasharray': [2, 2] } },
+    { id: 'road-minor', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', minzoom: 12,
+      filter: ['all', LINE, cls('minor', 'service', 'track'), notTunnel],
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': MAP_COLORS.road, 'line-width': ['interpolate', ['exponential', 1.55], ['zoom'], 13, 1.4, 20, 18] } },
+    { id: 'road-major-casing', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', minzoom: 11,
+      filter: ['all', LINE, cls('primary', 'secondary', 'tertiary', 'trunk', 'motorway'), notTunnel],
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': MAP_COLORS.casing, 'line-width': ['interpolate', ['exponential', 1.3], ['zoom'], 11, 2.5, 20, 24] } },
+    { id: 'road-major', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', minzoom: 10,
+      filter: ['all', LINE, cls('primary', 'secondary', 'tertiary', 'trunk', 'motorway'), notTunnel],
+      layout: { 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': MAP_COLORS.roadMajor, 'line-width': ['interpolate', ['exponential', 1.3], ['zoom'], 10, 1.5, 20, 20] } },
+    { id: 'rail', type: 'line', source: 'openmaptiles', 'source-layer': 'transportation', minzoom: 13,
+      filter: ['all', LINE, cls('rail', 'transit'), notTunnel],
+      paint: { 'line-color': MAP_COLORS.rail, 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 0.6, 18, 2] } },
+
+    { id: 'water-label', type: 'symbol', source: 'openmaptiles', 'source-layer': 'water_name', filter: LINE,
+      layout: { 'symbol-placement': 'line', 'symbol-spacing': 400, 'text-field': localName,
+        'text-font': ['Noto Sans Italic'], 'text-size': ['interpolate', ['linear'], ['zoom'], 12, 13, 16, 16], 'text-letter-spacing': 0.1 },
+      paint: { 'text-color': MAP_COLORS.water_label, 'text-halo-color': 'rgba(188,208,207,0.6)', 'text-halo-width': 1 } },
+    { id: 'waterway-label', type: 'symbol', source: 'openmaptiles', 'source-layer': 'waterway', minzoom: 13, filter: LINE,
+      layout: { 'symbol-placement': 'line', 'symbol-spacing': 400, 'text-field': localName,
+        'text-font': ['Noto Sans Italic'], 'text-size': 13 },
+      paint: { 'text-color': MAP_COLORS.water_label, 'text-halo-color': MAP_COLORS.land, 'text-halo-width': 1 } },
+    { id: 'street-label', type: 'symbol', source: 'openmaptiles', 'source-layer': 'transportation_name', minzoom: 15,
+      filter: ['all', LINE, cls('primary', 'secondary', 'tertiary', 'minor')],
+      layout: { 'symbol-placement': 'line', 'text-field': localName, 'text-font': ['Noto Sans Regular'],
+        'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 12], 'text-rotation-alignment': 'map' },
+      paint: { 'text-color': '#8b8b80', 'text-halo-color': MAP_COLORS.road, 'text-halo-width': 1.2 } },
+    { id: 'district-label', type: 'symbol', source: 'openmaptiles', 'source-layer': 'place', minzoom: 11, maxzoom: 17,
+      filter: cls('suburb', 'quarter', 'neighbourhood'),
+      layout: { 'text-field': localName, 'text-font': ['Noto Sans Regular'], 'text-transform': 'uppercase',
+        'text-letter-spacing': 0.12, 'text-max-width': 8,
+        'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 15, 13] },
+      paint: { 'text-color': MAP_COLORS.label, 'text-halo-color': MAP_COLORS.land, 'text-halo-width': 1.5 } },
+    { id: 'city-label', type: 'symbol', source: 'openmaptiles', 'source-layer': 'place', maxzoom: 12,
+      filter: cls('city', 'town'),
+      layout: { 'text-field': localName, 'text-font': ['Noto Sans Regular'], 'text-transform': 'uppercase',
+        'text-letter-spacing': 0.15, 'text-size': 13 },
+      paint: { 'text-color': MAP_COLORS.labelStrong, 'text-halo-color': MAP_COLORS.land, 'text-halo-width': 1.5 } },
+  ],
+};

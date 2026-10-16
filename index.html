@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stadtstücke. Prag</title>
+  <meta name="description" content="Ein Stadtführer für Prag: Architektur, Kunst, Parks, Essen und Ausblicke – mit Karte, Fußweg und ÖPNV.">
+  <link rel="icon" href="icons/landmark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+  <header class="nav" id="top">
+    <div class="nav__inner wrap">
+      <a class="brand" href="#/" aria-label="Stadtstücke – Startseite">
+        <img src="icons/landmark.svg" alt="" width="24" height="24">
+        <span>Stadtstücke.</span>
+      </a>
+      <nav class="nav__links" aria-label="Kapitel" data-nav></nav>
+      <div class="nav__tools">
+        <div class="lang" role="group" aria-label="Sprache / Language">
+          <button type="button" data-lang="de">DE</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+        <button class="nav__menu" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Menü öffnen" data-menu>
+          <img src="icons/menu.svg" alt="" width="24" height="24">
+          <span class="sr-only" data-i18n="menu"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer" id="drawer" hidden>
+    <div class="drawer__backdrop" data-menu-close></div>
+    <div class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <p class="kicker" id="drawer-title" data-i18n="chapters"></p>
+      <nav class="drawer__links" data-nav-drawer></nav>
+    </div>
+  </div>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__top">
+        <p class="footer__claim" data-i18n="footerClaim"></p>
+        <div class="footer__tips">
+          <p class="footer__kicker" data-i18n="footerKicker"></p>
+          <p class="footer__text" data-i18n="footerText"></p>
+          <p class="footer__note" data-i18n="footerNote"></p>
+        </div>
+      </div>
+      <div class="footer__bar">
+        <div>
+          <p class="footer__brand">Stadtstücke.</p>
+          <p class="footer__place" data-i18n="footerPlace"></p>
+        </div>
+        <a class="footer__up" href="#top" data-top>
+          <span data-i18n="backToTop">Zurück nach oben</span>
+          <img src="icons/arrow-up-right-light.svg" alt="" width="19" height="19">
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/stops.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/map-style.js"></script>
+  <script src="js/geo.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
